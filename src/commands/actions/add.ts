@@ -1,4 +1,10 @@
-import { SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import ky from 'ky';
 
 const command = new SlashCommandBuilder()
   .setName('add')
@@ -38,7 +44,7 @@ const command = new SlashCommandBuilder()
       .setDescription('Type de la recette')
       .setRequired(false)
       .addChoices([
-        { name: 'Dessert', value: 'Dessert' },
+        { name: 'Dessert', value: 'dessert' },
         { name: 'Plat', value: 'dish' },
       ]);
   })
@@ -49,17 +55,26 @@ const command = new SlashCommandBuilder()
       .setRequired(false);
   });
 
-async function execute(interaction: any) {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const name = interaction.options.getString('nom');
-  const duration = interaction.options.getString('temps');
+  const duration = interaction.options.getNumber('temps');
   const link = interaction.options.getString('lien');
-  const difficulty = interaction.options.getString('difficulte');
-  const recipeType = interaction.options.getString('type');
-  const notice = interaction.options.getString('avis');
+  const difficulty = interaction.options.getString('difficulte') || undefined;
+  const recipeType = interaction.options.getString('type') || undefined;
+  const notice = interaction.options.getString('avis') || undefined;
 
-  await interaction.reply(
-    JSON.stringify({ name, duration, link, difficulty, recipeType, notice }),
-  );
+  await ky.post('http://localhost:3333/recipe', {
+    json: {
+      name,
+      duration,
+      link,
+      difficulty,
+      type: recipeType,
+      notice,
+    },
+  });
+
+  await interaction.reply(`Recipe ${name} successfully added`);
 }
 
 export { command, execute };

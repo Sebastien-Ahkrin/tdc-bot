@@ -1,4 +1,9 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js';
 import ky from 'ky';
 
 import { Duration } from 'luxon';
@@ -17,7 +22,7 @@ interface Recipe {
   notice: string | null;
 }
 
-async function execute(interaction: any) {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const recipe = await ky.get<Recipe>('http://localhost:3333/recipes').json();
 
   const duration = Duration.fromObject({ minutes: recipe.duration }).shiftTo(
