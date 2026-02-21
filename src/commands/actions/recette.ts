@@ -8,7 +8,7 @@ import ky from 'ky';
 
 import { Duration } from 'luxon';
 import { config } from '../../env';
-import { typeChoices } from '../../utils/choices';
+import { difficultyChoices, typeChoices } from '../../utils/choices';
 
 const command = new SlashCommandBuilder()
   .setName('recette')
@@ -62,7 +62,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     },
     {
       name: 'Temps ⏱',
-      value: `${duration.hours}:${duration.minutes}`,
+      value: `${duration.hours} heure(s) ${duration.minutes} minute(s)`,
     },
     {
       name: 'Lien 🔗',
@@ -80,23 +80,33 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   if (recipe.difficulty) {
     fields.push({
       name: 'Difficulé 🔥',
-      value: recipe.difficulty,
+      value: getDisplayDifficulty(recipe.difficulty),
     });
   }
 
   if (recipe.type) {
     fields.push({
       name: 'Type 🥗',
-      value: recipe.type,
+      value: getDisplayType(recipe.type),
     });
   }
 
   const embed = new EmbedBuilder()
-    .setColor(0x0099ff)
+    .setColor(0x891a20)
     .setTitle('🎲 Ta recette aléatoire 😍')
     .setFields(fields);
 
   await interaction.reply({ embeds: [embed] });
+}
+
+function getDisplayType(recipeType: string): string {
+  return typeChoices.find((t) => t.value === recipeType)?.name || 'Erreur';
+}
+
+function getDisplayDifficulty(difficulty: string) {
+  return (
+    difficultyChoices.find((d) => d.value === difficulty)?.name || 'Erreur'
+  );
 }
 
 export { command, execute };

@@ -45,8 +45,8 @@ const command = new SlashCommandBuilder()
   })
   .addStringOption((option) => {
     return option
-      .setName('avis')
-      .setDescription('Avis sur la recette')
+      .setName('conseil')
+      .setDescription('Conseil sur la recette')
       .setRequired(false);
   });
 
@@ -56,7 +56,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const link = interaction.options.getString('lien');
   const difficulty = interaction.options.getString('difficulte') || undefined;
   const recipeType = interaction.options.getString('type') || undefined;
-  const notice = interaction.options.getString('avis') || undefined;
+  const notice = interaction.options.getString('conseil') || undefined;
 
   await ky.post('http://localhost:3333/recipe', {
     headers: {
@@ -72,7 +72,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     },
   });
 
-  await interaction.reply(`Recipe ${name} successfully added`);
+  await interaction.reply(`La recette "${name}" à bien été ajoutée !`);
 }
 
 export { command, execute };
