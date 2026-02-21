@@ -5,6 +5,7 @@ import {
 } from 'discord.js';
 
 import ky from 'ky';
+import { config } from '../../env';
 
 const command = new SlashCommandBuilder()
   .setName('add')
@@ -64,6 +65,9 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const notice = interaction.options.getString('avis') || undefined;
 
   await ky.post('http://localhost:3333/recipe', {
+    headers: {
+      'Bot-Key': config.BOT_KEY,
+    },
     json: {
       name,
       duration,

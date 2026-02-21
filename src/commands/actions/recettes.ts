@@ -7,6 +7,7 @@ import {
 import ky from 'ky';
 
 import { Duration } from 'luxon';
+import { config } from '../../env';
 
 const command = new SlashCommandBuilder()
   .setName('recettes')
@@ -23,7 +24,13 @@ interface Recipe {
 }
 
 async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
-  const recipe = await ky.get<Recipe>('http://localhost:3333/recipes').json();
+  const recipe = await ky
+    .get<Recipe>('http://localhost:3333/recipe', {
+      headers: {
+        'Bot-Key': config.BOT_KEY,
+      },
+    })
+    .json();
 
   const duration = Duration.fromObject({ minutes: recipe.duration }).shiftTo(
     'hours',
