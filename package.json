@@ -10,7 +10,8 @@
   "dependencies": {
     "discord.js": "^14.22.1",
     "dotenv": "^17.2.2",
-    "ky": "^1.14.3"
+    "ky": "^1.14.3",
+    "luxon": "^3.7.2"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
