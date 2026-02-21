@@ -6,6 +6,7 @@ import {
 
 import ky from 'ky';
 import { config } from '../../env';
+import { difficultyChoices, typeChoices } from '../../utils/choices';
 
 const command = new SlashCommandBuilder()
   .setName('add')
@@ -33,21 +34,14 @@ const command = new SlashCommandBuilder()
       .setName('difficulte')
       .setDescription('Difficulté de la recette')
       .setRequired(false)
-      .addChoices([
-        { name: 'Dur', value: 'hard' },
-        { name: 'Moyenne', value: 'medium' },
-        { name: 'Facile', value: 'easy' },
-      ]);
+      .addChoices(difficultyChoices);
   })
   .addStringOption((option) => {
     return option
       .setName('type')
       .setDescription('Type de la recette')
       .setRequired(false)
-      .addChoices([
-        { name: 'Dessert', value: 'dessert' },
-        { name: 'Plat', value: 'dish' },
-      ]);
+      .addChoices(typeChoices);
   })
   .addStringOption((option) => {
     return option

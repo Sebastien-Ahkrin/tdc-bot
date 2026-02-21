@@ -8,10 +8,18 @@ import ky from 'ky';
 
 import { Duration } from 'luxon';
 import { config } from '../../env';
+import { typeChoices } from '../../utils/choices';
 
 const command = new SlashCommandBuilder()
   .setName('recette')
-  .setDescription('Affiche une recette aléatoire');
+  .setDescription('Affiche une recette aléatoire')
+  .addStringOption((option) => {
+    return option
+      .setName('type')
+      .setDescription('Type de la recette')
+      .addChoices(typeChoices)
+      .setRequired(false);
+  });
 
 interface Recipe {
   id: number;
@@ -24,13 +32,22 @@ interface Recipe {
 }
 
 async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
+  const typeOption = interaction.options.getString('type');
+
   const recipe = await ky
-    .get<Recipe>('http://localhost:3333/recipe', {
-      headers: {
-        'Bot-Key': config.BOT_KEY,
+    .get<Recipe | { data: string }>(
+      `http://localhost:3333/recipe${typeOption ? `?type=${typeOption}` : ''}`,
+      {
+        headers: {
+          'Bot-Key': config.BOT_KEY,
+        },
       },
-    })
+    )
     .json();
+
+  if ('data' in recipe) {
+    return await interaction.reply("Aucune recette n'as été trouvée ..");
+  }
 
   const duration = Duration.fromObject({ minutes: recipe.duration }).shiftTo(
     'hours',
