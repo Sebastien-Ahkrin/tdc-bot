@@ -10,8 +10,8 @@ import { Duration } from 'luxon';
 import { config } from '../../env';
 
 const command = new SlashCommandBuilder()
-  .setName('recettes')
-  .setDescription('Affiche toutes les recettes');
+  .setName('recette')
+  .setDescription('Affiche une recette aléatoire');
 
 interface Recipe {
   id: number;
