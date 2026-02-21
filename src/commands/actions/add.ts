@@ -37,7 +37,10 @@ const command = new SlashCommandBuilder()
       .setName('type')
       .setDescription('Type de la recette')
       .setRequired(false)
-      .addChoices([{ name: 'Dessert', value: 'Dessert' }]);
+      .addChoices([
+        { name: 'Dessert', value: 'Dessert' },
+        { name: 'Plat', value: 'dish' },
+      ]);
   })
   .addStringOption((option) => {
     return option
